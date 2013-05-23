@@ -1,0 +1,275 @@
+body {
+	font-size: 1em;
+}
+.container {
+	font-size: 70%;
+}
+
+/** Forms **/
+form {
+	clear: both;
+	margin-right: 20px;
+	padding: 0;
+	width: 95%;
+}
+fieldset {
+	border: none;
+	margin-bottom: 1em;
+	padding: 16px 10px;
+}
+fieldset legend {
+	color: #e32;
+	font-weight: bold;
+}
+fieldset fieldset {
+	margin-top: 0;
+	padding: 10px 0 0;
+}
+fieldset fieldset legend {
+	font-weight: normal;
+}
+fieldset fieldset div {
+	clear: left;
+	margin: 0 20px;
+}
+form div {
+	clear: both;
+	margin-bottom: 1em;
+	padding: .5em;
+	vertical-align: text-top;
+}
+form .input {
+	color: #444;
+}
+form .required {
+	font-weight: bold;
+}
+form .required label:after {
+	color: #e32;
+	content: '*';
+	display:inline;
+}
+form div.submit {
+	border: 0;
+	clear: both;
+	margin-top: 10px;
+}
+label {
+	display: block;
+	margin-bottom:3px;
+}
+input, textarea {
+	clear: both;
+	padding: 1%;
+}
+select {
+	clear: both;
+	vertical-align: text-bottom;
+}
+select[multiple=multiple] {
+	width: 100%;
+}
+option {
+	padding: 0 3px;
+}
+input[type=checkbox] {
+	margin: 0px 6px 7px 2px;
+	width: auto;
+}
+div.checkbox label {
+	display: inline;
+}
+input[type=radio] {
+	float:left;
+	width:auto;
+	margin: 6px 0;
+	padding: 0;
+	line-height: 26px;
+}
+.radio label {
+	margin: 0 0 6px 20px;
+	line-height: 26px;
+}
+input[type=submit] {
+	display: inline;
+	width: auto;
+}
+form .submit input[type=submit] {
+	background:#62af56;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#76BF6B), to(#3B8230));
+	background-image: -webkit-linear-gradient(top, #76BF6B, #3B8230);
+	background-image: -moz-linear-gradient(top, #76BF6B, #3B8230);
+	border-color: #2d6324;
+	color: #fff;
+	text-shadow: rgba(0, 0, 0, 0.5) 0px -1px 0px;
+	padding: 8px 10px;
+}
+form .submit input[type=submit]:hover {
+	background: #5BA150;
+}
+** Elements **/
+#url-rewriting-warning {
+	display:none;
+}
+
+
+input, select, textarea {
+	border: solid 1px #8E927E;	 
+}
+.rows.first {
+	padding-left: 60px;
+}
+.rows {
+	padding-left: 20px;
+}
+.rows, span.properties {
+	display: inline-block;
+}
+.rows label {
+	font-weight: bold;
+}
+input[type="button"] {
+    cursor: pointer;	
+}
+input[type="button"]:hover {
+	color: #FFFFFF;
+	background-color: #757867;
+}
+input.remove {
+	cursor: pointer;
+    float: right;
+    font-size: 13px;
+    height: 20px;
+    line-height: 20px;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    width: 20px;
+    opacity: 0.2;
+}
+input.remove:hover {
+    opacity: 1;
+}
+.fieldwrapper {
+	border-bottom: dotted 1px #B3B5A8;
+	min-height: 100px;
+	height: auto!important;
+	position: relative;
+	padding: 10px;
+}
+.samplefield:hover,
+.fieldwrapper:hover,
+.fieldselected {
+	background-color: #FFFFCC;
+}
+h3.number {
+	position: absolute;
+	left: 10px;
+	font-weight: bold;
+	font-size: 34px;
+	color: #E8E9E4;
+	width: 36px;
+	text-align: right;
+	line-height: 64px;
+}
+input[type="text"],
+input[type="password"] {
+	width: 250px;
+}
+input.cancel {
+	float: right;
+}
+
+.filter {
+	width: 80%;
+	margin: 20px auto;
+	padding: 40px;
+	border: dotted 1px #C0C0C0;
+}
+input[type="text"] {
+	width: auto;
+}
+
+.logout {
+	border-top: 1px dotted #EAEBE7;
+	padding: 20px 0;
+	margin: 20px 0;
+}
+.form_hover {
+	position: relative;
+	width: 100%;
+	bottom: 0;
+}
+th:hover,
+th a:hover {
+	background-color: #333333;
+	color: #E2E2E2;
+}
+.form_hover form {
+	background-color: #333333;
+    border: 1px solid #000000 !important;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.4);
+    color: #FFFFFF;
+    left: -4px;
+    padding: 10px;
+    position: absolute;
+    top: 5px;
+    width: 174px;
+}
+input.search {
+    height: 1.5em;
+    width: 96%;
+}
+.form_hover input {
+	margin-top: 4px;
+	margin-bottom: 0px;
+}
+.form_hover label {
+	font-weight: normal;
+}
+.hide {
+	display: none;
+}
+.right {
+	float: right;
+	clear: both;
+}
+.properties {
+}
+.clearboth {
+	height: 0px;
+	line-height: 0px;
+	width: 100%;
+	clear: both;
+}
+.properties label {
+	text-transform: capitalize;
+}
+fieldset {	
+	width: 25%;
+	float: left;
+}
+fieldset#formView {	
+	width: 40%;
+}
+.sample {
+}
+.sample label {
+	float: left;
+	width: 25%;
+	text-align: right;
+	line-height: 28px;
+	margin-right: 8px;
+}
+.rows_horizontal {
+	width: 100%;
+	float: left;
+	padding: 4px;
+	position: relative;
+}
+.samplefield {
+	cursor: pointer;
+}

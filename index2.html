@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Form Builder</title>
+	<script src="js/jquery-1.7.2.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<style type="text/css">
+		body{
+			font-family: helvetica, arial;
+			font-size: 1em;
+		}
+		.container {
+			font-size: 90%;
+		}
+		.twocolumn {
+			float: left;
+			width: 40%;
+			padding: 5px;
+		}
+		#form_elements, #form_build { 
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+			float: left;
+			margin-right: 10px;
+			background: #eee;
+			padding: 5px;
+		}
+		#form_elements li, #form_build li { 
+			margin: 5px;
+			padding: 5px;
+		 }
+
+	</style>
+</head>
+<body>
+	<div class="container">
+
+<script type="text/javascript">
+
+	$('.sfield').live('change', function(){
+	    var selected = $(this).val();
+	    selectField(selected,  true);
+	    return false;
+	});
+
+	$('.construct').live('change', function(){
+		var val = $(this).val();
+		var type = $(this).attr('name');
+		var target = $('.sample .text');	
+		switch(type){
+			case 'label':
+				$('.sample label').html(val);
+			break;
+			case 'name':
+				target.attr('name', val);
+			break;
+			case 'value':
+				target.val(val);
+			break;
+		}
+	});
+
+	$('.samplefield').live('click', function(){
+		$('.samplefield').removeClass('fieldselected');
+		$(this).toggleClass('fieldselected');
+		var field = $('.field', this).attr('name');
+	    selectField(field, false);
+	});
+
+
+	// $('.fieldselected').live('change', function(){
+	// });
+
+	function getProperties(display,name,type,action) {
+		$('.element').html('');
+		element = null;
+		for (var i = 0; i < display.length; i++) {
+			element = display[i];
+			$('.element').append(propertiesField(element));
+		}
+		if(action) {
+			$('.sample').append(sampleField(type,name));
+		}
+    	return false;
+	}
+
+	function sampleField(type,name){
+		switch(type){
+			case 'text':
+				element = '<label for="'+type+'">'+name+'</label><input type="text" class="field" name="'+name+'" value="">';
+			break;
+			case 'textarea':
+				element = '<label for="'+type+'">'+name+'</label><textarea class="field" name="'+name+'" value=""></textarea>';
+			break;
+			case 'select':
+				element = '<label for="'+type+'">'+name+'</label><select id="'+type+'" name="'+name+'" class="field"><option value="us">US</option><option value="international">International</option></select>';
+			break;
+			case 'radio':
+				element = '<label for="'+type+'">'+name+'</label><input type="radio" class="field" name="'+name+'" value="1">';
+			break;
+			case 'checkbox':
+				element = '<label for="'+type+'">'+name+'</label><input type="checkbox" class="field" name="'+name+'" value="1">';
+			break;
+			case 'button':
+			case 'reset':
+			case 'submit':
+				element = '<input type="'+type+'" id="'+type+'" class="field" name="'+name+'" value="'+name+'" onclick="">';
+			break;
+		}
+		return '<div class="samplefield rows_horizontal">'+element+'<input type="button" value="-" class="remove"></div>';
+	}
+
+	function propertiesField(type) {
+		var element;
+
+		switch(type) {
+			case 'required': //checkbox
+				element = '<label for="'+type+'">'+type+'</label><input type="checkbox" class="construct" name="'+type+'" value="1">';
+			break;
+			case 'value': //text
+			case 'label':
+			case 'name':
+			case 'onclick':
+			case 'column':
+			case 'row':
+				element = '<label for="'+type+'">'+type+'</label><input type="text" class="construct" name="'+type+'" value="">';
+			break;
+			case 'options': //textarea
+			case 'option1':
+			case 'option2':
+				element = '<label for="'+type+'">'+type+'</label><textarea class="construct" name="'+type+'" value=""></textarea>';
+			break;
+			case 'region': //select
+				element = '<label for="'+type+'">'+type+'</label><select id="'+type+'" name="'+type+'" class="construct"><option value="us">US</option><option value="international">International</option></select>';
+			break;
+			case 'date': //select
+				element = '<select id="'+type+'" name="'+type+'" class="construct"><option value="ddmmyyyy">DD/MM/YYYY</option><option value="mmyyyy">MM/YYYY</option><option value="yyyy">YYYY</option></select>';
+			break;
+		}
+		return '<div class="properties">'+element+'</div>';
+	}
+
+	function selectField(selected,action){
+		var display;
+		switch(selected){	
+			case 'email':
+				display = ['required','value','label','name'];
+	   			field = getProperties(display, selected, 'text', action);
+			break;
+			case 'hidden':
+				display = ['value','name'];
+	   			field = getProperties(display, selected, 'text', action);
+			break;
+			case 'postcode':
+				display = ['required','value','label','name','region'];
+	   			field = getProperties(display, selected, 'text', action);
+			break;
+			case 'text':
+				display = ['required','value','label','name'];
+	   			field = getProperties(display, selected, 'text', action);
+			break;
+			case 'textarea':
+				display = ['required','label','name','column','row'];
+	   			field = getProperties(display, selected, 'textarea', action);
+			break;
+			case 'gcheckbox':
+				display = ['required','value','label','name','options'];
+	   			field = getProperties(display, selected, 'checkbox', action);
+			break;
+			case 'scheckbox':
+				display = ['required','value','label','name'];
+	   			field = getProperties(display, selected, 'checkbox', action);
+			break;
+			case 'gradio':
+				display = ['required','value','label','name','options'];
+	   			field = getProperties(display, selected, 'radio', action);
+			break;
+			case 'sradio':
+				display = ['required','value','label','name'];
+	   			field = getProperties(display, selected, 'radio', action);
+			break;
+			case 'chain':
+				display = ['required','label','name','option1','option2'];
+	   			field = getProperties(display, selected, 'select', action);
+			break;
+			case 'select':
+				display = ['required','label','name','options'];
+	   			field = getProperties(display, selected, 'select', action);
+			break;
+			case 'sdate':
+				display = ['required','label','name','date'];
+	   			field = getProperties(display, selected, 'select', action);
+			break;
+			case 'button':
+				display = ['value','name','onclick'];
+	   			field = getProperties(display, selected, 'button', action);
+			break;
+			case 'reset':
+				display = ['value','name','onclick'];
+	   			field = getProperties(display, selected, 'reset', action);
+			break;
+			case 'submit':
+				display = ['value','name','onclick'];
+	   			field = getProperties(display, selected, 'submit', action);
+			break;
+	    }
+    	return false;
+	}
+</script>
+
+
+
+<fieldset id="formFields">
+	<legend>Fields</legend>
+	<div id="field1" class="fieldwrapper">
+		<div class="rows">
+			<label>Field Type</label>
+			<select id="select1" name="data[Campaign][rules][1][fieldtype]" class="sfield">
+				<option value="">Select Field Type</option>
+
+				<optgroup label="Input">
+					<option value="email">Email</option>
+					<option value="hidden">Hidden</option>
+					<option value="postcode">Postcode</option>
+					<option value="text">Text</option>
+					<option value="textarea">Textarea</option>
+				</optgroup>
+
+				<optgroup label="Checkbox">
+					<option value="gcheckbox">Group</option>
+					<option value="scheckbox">Single</option>
+				</optgroup>
+
+				<optgroup label="Radio">
+					<option value="gradio">Group</option>
+					<option value="sradio">Single</option>
+				</optgroup>
+
+				<optgroup label="Option">
+					<option value="chain">Chain-Select</option>
+					<option value="select">Select</option>
+					<option value="sdate">Select (Date)</option>
+				</optgroup>
+
+				<optgroup label="Button">
+					<option value="button">Button</option>
+					<option value="reset">Reset</option>
+					<option value="submit">Submit</option>
+				</optgroup>
+			</select>
+
+		</div>			
+			<div class="clearboth"></div>
+	</div>
+</fieldset>
+<fieldset id="formView">
+	<legend>View</legend>
+	<div class="sample"></div>
+</fieldset>
+
+<fieldset id="formProp">
+	<legend>Properties</legend>
+	<div class="element"></div>
+</fieldset>
+
+			<div class="clearboth"></div>
+
+
+<!-- <input type="button" value="Add a field" class="add" id="add" /> -->
+
+
+</div>
+</body>
+</html>
