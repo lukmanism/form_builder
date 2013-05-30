@@ -1,0 +1,3 @@
+<?
+
+echo $_POST['value'];

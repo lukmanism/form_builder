@@ -4,7 +4,9 @@
 	<meta charset="utf-8">
 	<title>Form Builder</title>
 	<script src="js/jquery-1.7.2.js"></script>
+	<script src="vis_edit/include_jeditable.js"></script>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link type="text/css" href="vis_edit/css.php" rel="stylesheet">
 	<style type="text/css">
 		body{
 			font-family: helvetica, arial;
@@ -38,70 +40,118 @@
 	<div class="container">
 
 <script type="text/javascript">
-
-	$('.sfield').live('change', function(){
-	    var selected = $(this).val();
+/* ----------EVENT START-----------------------------------------------------------------------------*/
+	
+	// ADD FIELD ELEMENT TO VIEW
+	$('.addfield').live('click', function(){
+	    var selected = $(this).attr('title');
 	    selectField(selected,  true);
 	    return false;
 	});
 
-	$('.construct').live('change', function(){
-		var val = $(this).val();
-		var type = $(this).attr('name');
-		var target = $('.sample .text');	
-		switch(type){
-			case 'label':
-				$('.sample label').html(val);
-			break;
-			case 'name':
-				target.attr('name', val);
-			break;
-			case 'value':
-				target.val(val);
-			break;
-		}
-	});
-
-	$('.samplefield').live('click', function(){
-		$('.samplefield').removeClass('fieldselected');
+	// VIEW ACTION
+	$('.viewField').live('click', function(){ 
+		$(".edit").editable("vis_edit/save.php");
+		$('.viewField').removeClass('fieldselected');
 		$(this).toggleClass('fieldselected');
-		var field = $('.field', this).attr('name');
-	    selectField(field, false);
+		var rowid = $(this).attr('id').split("_");
+		var ID = $('h3', this).attr('id');
+		var inputTypes = [];
+		$('.field[name]', this).each(function(){
+		    inputTypes.push($(this).attr('name'),$(this).attr('class'),$(this).attr('value'));
+		});
+	    selectField(ID, false, rowid[1]);
+	    parseProperties(inputTypes);
+	    // console.log(rowid[1],ID);
 	});
 
+	$('.field').live('change', function(){
+		var val = $(this).val();
+		$(this).attr('value',val);
+	});
 
-	// $('.fieldselected').live('change', function(){
-	// });
+	// PROPERTIES ACTION
+	$('.property').live('change', function(){ 
+		var thisid = this.parentNode.id.split("_");
+		var val = $(this).val();
+		var name = $(this).attr('name').split("_");
+		var eclass = (name[1])? ' .field_'+name[1]: ' .field';
 
-	function getProperties(display,name,type,action) {
-		$('.element').html('');
-		element = null;
-		for (var i = 0; i < display.length; i++) {
-			element = display[i];
-			$('.element').append(propertiesField(element));
+		// console.log(name);
+		// console.log(field);
+		// console.log(val);
+
+		switch(name[0]){
+			case 'label':
+				$('#edit_'+thisid[1]+' label').html(val);
+			break;
+			case 'cols':
+			case 'name':
+			case 'rows':
+			case 'value':
+			case 'onclick':
+				$('#edit_'+thisid[1] + eclass).attr(name[0], val);
+			break;
+			case 'required':
+				target.toggleClass('required');
+			break;
+			case 'option': // CHAIN
+				constructOption('#edit_'+thisid[1] + eclass, val, true);
+			break;
+			case 'options': // SINGLE
+				constructOption('#edit_'+thisid[1] + eclass, val, false);
+			break;
+			case 'date': // SELECT DATE
+				constructDate('#edit_'+thisid[1] + eclass, val, false);
+			break;
+			case 'groupName':
+				$('#edit_'+thisid[1] + eclass).attr('name', val+'[]');
+			break;
 		}
-		if(action) {
-			$('.sample').append(sampleField(type,name));
-		}
-    	return false;
+	});
+
+/* ----------FUNCTION START-----------------------------------------------------------------------------*/
+	
+	// PARSE FIELD SETTING
+	function parseProperties(inputTypes){
+		// console.log(inputTypes);
+		return false;
 	}
 
-	function sampleField(type,name){
+	// VIEW
+	// selectField() -> addProperties() -> this
+	function viewField(type,name,intId){ 
 		switch(type){
 			case 'text':
-				element = '<label for="'+type+'">'+name+'</label><input type="text" class="field" name="'+name+'" value="">';
+				element = '<label for="'+type+'" class="edit">'+name+'</label><input type="text" class="field" name="'+name+'" value="">';
+			break;
+			case 'hidden':
+				element = '<label></label><input type="text" class="field hiddenfield" name="'+name+'" value="">';
 			break;
 			case 'textarea':
-				element = '<label for="'+type+'">'+name+'</label><textarea class="field" name="'+name+'" value=""></textarea>';
+				element = '<label for="'+type+'" class="edit">'+name+'</label><textarea class="field" name="'+name+'" value=""></textarea>';
 			break;
 			case 'select':
-				element = '<label for="'+type+'">'+name+'</label><select id="'+type+'" name="'+name+'" class="field"><option value="us">US</option><option value="international">International</option></select>';
+				element = '<label for="'+type+'" class="edit">'+name+'</label><select id="'+type+'" name="'+name+'" class="field"></select>';
+			break;
+			case 'dselect':
+				element = '<div id="container_'+type+'"><label for="'+type+'" class="edit">'+name+'</label><select id="'+type+'" name="'+name+'" class="field"></select></div>';
+			break;
+			case 'cselect':
+				element = '<label for="'+name+'" class="edit">'+name+' A</label><select id="'+type+'1" name="'+name+'" class="field"></select></br></br><label for="'+name+'" class="edit">'+name+' B</label><select id="'+type+'2" name="'+name+'" class="field_2"></select>';
 			break;
 			case 'radio':
-				element = '<label for="'+type+'">'+name+'</label><input type="radio" class="field" name="'+name+'" value="1">';
+				element = '<label for="'+type+'" class="edit">'+name+'</label><input type="radio" class="field" name="'+name+'" value="1">';
 			break;
 			case 'checkbox':
-				element = '<label for="'+type+'">'+name+'</label><input type="checkbox" class="field" name="'+name+'" value="1">';
+				element = '<label for="'+type+'" class="edit">'+name+'</label><input type="checkbox" class="field" name="'+name+'" value="1">';
+			break;
+
+//HOLD
+
+			case 'gcheckbox':
+				element = '<div><label for="'+type+'" class="edit">'+name+'</label><input type="checkbox" class="field" name="'+name+'" value="1"></div>';
+				element += '<div><label for="'+type+'" class="edit">'+name+'</label><input type="checkbox" class="field" name="'+name+'" value="1"></div>';
 			break;
 			case 'button':
 			case 'reset':
@@ -109,105 +159,311 @@
 				element = '<input type="'+type+'" id="'+type+'" class="field" name="'+name+'" value="'+name+'" onclick="">';
 			break;
 		}
-		return '<div class="samplefield rows_horizontal">'+element+'<input type="button" value="-" class="remove"></div>';
+		return '<div class="viewField rows_horizontal" id="edit_'+intId+'"><h3 class="number" id="'+name+'">'+intId+'</h3>'+element+'<input type="button" value="-" class="remove"></div>';
 	}
 
-	function propertiesField(type) {
-		var element;
-
-		switch(type) {
-			case 'required': //checkbox
-				element = '<label for="'+type+'">'+type+'</label><input type="checkbox" class="construct" name="'+type+'" value="1">';
-			break;
-			case 'value': //text
-			case 'label':
-			case 'name':
-			case 'onclick':
-			case 'column':
-			case 'row':
-				element = '<label for="'+type+'">'+type+'</label><input type="text" class="construct" name="'+type+'" value="">';
-			break;
-			case 'options': //textarea
-			case 'option1':
-			case 'option2':
-				element = '<label for="'+type+'">'+type+'</label><textarea class="construct" name="'+type+'" value=""></textarea>';
-			break;
-			case 'region': //select
-				element = '<label for="'+type+'">'+type+'</label><select id="'+type+'" name="'+type+'" class="construct"><option value="us">US</option><option value="international">International</option></select>';
-			break;
-			case 'date': //select
-				element = '<select id="'+type+'" name="'+type+'" class="construct"><option value="ddmmyyyy">DD/MM/YYYY</option><option value="mmyyyy">MM/YYYY</option><option value="yyyy">YYYY</option></select>';
-			break;
-		}
-		return '<div class="properties">'+element+'</div>';
-	}
-
-	function selectField(selected,action){
-		var display;
-		switch(selected){	
+	// FIELDS
+	// load selected field setting 
+	// $(event) -> this
+	function selectField(ID,action,rowid){
+		var props;
+		switch(ID){	
 			case 'email':
-				display = ['required','value','label','name'];
-	   			field = getProperties(display, selected, 'text', action);
+			case 'text':
+				props = ['required','name'];
+	   			field = addProperties(props,ID,'text',action,rowid);
 			break;
 			case 'hidden':
-				display = ['value','name'];
-	   			field = getProperties(display, selected, 'text', action);
+				props = ['name'];
+	   			field = addProperties(props,ID,'hidden',action,rowid);
 			break;
 			case 'postcode':
-				display = ['required','value','label','name','region'];
-	   			field = getProperties(display, selected, 'text', action);
-			break;
-			case 'text':
-				display = ['required','value','label','name'];
-	   			field = getProperties(display, selected, 'text', action);
+			case 'phone':
+				props = ['required','name','region'];
+	   			field = addProperties(props,ID,'text',action,rowid);
 			break;
 			case 'textarea':
-				display = ['required','label','name','column','row'];
-	   			field = getProperties(display, selected, 'textarea', action);
+				props = ['required','name','cols','rows'];
+	   			field = addProperties(props,ID,'textarea',action,rowid);
 			break;
 			case 'gcheckbox':
-				display = ['required','value','label','name','options'];
-	   			field = getProperties(display, selected, 'checkbox', action);
+				props = ['required','groupName','option_checkbox'];
+	   			field = addProperties(props,ID,'gcheckbox',action,rowid);
 			break;
 			case 'scheckbox':
-				display = ['required','value','label','name'];
-	   			field = getProperties(display, selected, 'checkbox', action);
+				props = ['required','name'];
+	   			field = addProperties(props,ID,'checkbox',action,rowid);
 			break;
 			case 'gradio':
-				display = ['required','value','label','name','options'];
-	   			field = getProperties(display, selected, 'radio', action);
+				props = ['required','groupName','option_radio'];
+	   			field = addProperties(props,ID,'radio',action,rowid);
 			break;
-			case 'sradio':
-				display = ['required','value','label','name'];
-	   			field = getProperties(display, selected, 'radio', action);
-			break;
-			case 'chain':
-				display = ['required','label','name','option1','option2'];
-	   			field = getProperties(display, selected, 'select', action);
+			case 'chainselect':
+				props = ['required','name','option'];
+	   			field = addProperties(props,ID,'cselect',action,rowid);
 			break;
 			case 'select':
-				display = ['required','label','name','options'];
-	   			field = getProperties(display, selected, 'select', action);
+				props = ['required','name','options'];
+	   			field = addProperties(props,ID,'select',action,rowid);
 			break;
 			case 'sdate':
-				display = ['required','label','name','date'];
-	   			field = getProperties(display, selected, 'select', action);
+				props = ['required','name','date'];
+	   			field = addProperties(props,ID,'dselect',action,rowid);
 			break;
 			case 'button':
-				display = ['value','name','onclick'];
-	   			field = getProperties(display, selected, 'button', action);
+				props = ['name','onclick'];
+	   			field = addProperties(props,ID,'button',action,rowid);
 			break;
 			case 'reset':
-				display = ['value','name','onclick'];
-	   			field = getProperties(display, selected, 'reset', action);
+				props = ['name','onclick'];
+	   			field = addProperties(props,ID,'reset',action,rowid);
 			break;
 			case 'submit':
-				display = ['value','name','onclick'];
-	   			field = getProperties(display, selected, 'submit', action);
+				props = ['name','onclick'];
+	   			field = addProperties(props,ID,'submit',action,rowid);
 			break;
 	    }
     	return false;
 	}
+
+	// PROPERTIES
+	// load selected field properties 
+	// selectField() -> addProperties() -> this
+	function propertiesField(type,rowid,ID) { 
+		var element;
+
+		switch(type) {
+			case 'required': //checkbox
+				element = '<label for="'+type+'">'+type+'</label><input type="checkbox" class="property" name="'+type+'" value="1" id="'+ID+'">';
+			break;
+			case 'name':
+			case 'onclick':
+			case 'cols':
+			case 'rows': //text
+				element = '<label for="'+type+'">'+type+'</label><input type="text" class="property" name="'+type+'" value="" id="'+ID+'">';
+			break;
+			case 'groupName':
+				element = '<label for="'+type+'">'+type+'</label><input type="text" class="property" name="'+type+'" value="" id="'+ID+'">';
+			break;
+			case 'option_checkbox': //textarea
+			case 'option_radio':
+			case 'options':
+			case 'option':
+				element = '<label for="'+type+'">'+type+'</label><textarea class="property" name="'+type+'" id="'+ID+'"></textarea>';
+			break;
+			case 'region': //select
+				element = '<label for="'+type+'">'+type+'</label><select id="'+type+'" name="'+type+'" class="property" id="'+ID+'"><option value="us">US</option><option value="international">International</option></select>';
+			break;
+			case 'date': //select
+				element = '<label for="'+type+'">'+type+'</label><select id="'+type+'" name="'+type+'" class="property" id="'+ID+'"><option value="">Select Format...</option><option value="mmyyyy">MM/YYYY</option><option value="yyyy">YYYY</option></select>';
+			break;
+		}
+		return '<div class="properties" id="prop_'+rowid+'">'+element+'</div>';
+		// console.log(this);
+	}
+
+	// Add field properties input
+	// selectField() -> this
+	function addProperties(props,ID,type,action,rowid) {
+    	var intId = $("#formView h3").length+1;
+		$('.element').html('');
+		element = null;
+		if(action) { //true = add field
+			for (var i = 0; i < props.length; i++) {
+				element = props[i];
+				$('.element').append(propertiesField(element,intId,ID));
+			}			
+				$('.view').append(viewField(type,ID,intId));
+		} else {			
+			for (var i = 0; i < props.length; i++) {
+				element = props[i];
+				$('.element').append(propertiesField(element,rowid,ID));
+			}
+		}
+    	return false;
+	}
+
+	// Applied to Select & Chain Select values
+	// constructOption() -> this
+	function getUnique(a) {
+		var b = [a[0]], i, j, tmp;
+		for (i = 1; i < a.length; i++) {
+			tmp = 1;
+		for (j = 0; j < b.length; j++) {
+			if (a[i] == b[j]) { tmp = 0; break; }
+		}
+		if (tmp) { b.push(a[i]); }
+		}
+		return b.sort();
+	}
+
+	// search string in haystack
+	// constructOption() -> this
+	function strstr(haystack, needle) {
+	    var i = 0,
+	        tempLength = 0,
+	        temp = [];
+	    for (;;) {
+	        if (haystack[i] === undefined || needle == null) {
+	            // return "No match";
+	            return false;
+	        }
+	        //if the char doesn't match then reset
+	        else if (haystack[i] !== needle[tempLength]) {
+	            temp = [];
+	            tempLength = 0;
+	        } 
+	        //the char matches so let's store it.
+	        else if (haystack[i] === needle[tempLength]) {
+	            temp[tempLength] = haystack[i];
+	            if (needle[tempLength + 1] === undefined) {
+	                // return temp;
+	                return true;
+	            }
+	            tempLength++;
+	        }
+	     i++;
+	   }
+	}
+
+	function constructDate(target, thatval, chainselect) {
+		// console.log(target, thatval, chainselect);
+		$(target +" option").remove();
+		// var options = thatval.split("\n");
+		// var index = target.split("_");
+		// index = index[1].replace(' .field','');
+		var defaultSelected = false;
+
+		var myDate = new Date();
+		var years = new Array();
+		var months = new Array();
+
+		var month=new Array();
+		var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+		for(var i = 0; i < 3; i++){
+			var year = myDate.getFullYear()+i;
+			if(year == myDate.getFullYear()){
+				year += '{SELECTED}';
+			}
+			years.push(year);
+		}
+
+		// console.log(myDate.getMonth());
+		$.each(months, function(key, value){
+			if(key == myDate.getMonth()+1){
+				value += '{SELECTED}';
+			}
+			month.push(value);
+			console.log(key, value);
+		});
+
+		var option = [];
+		switch(thatval){
+			case 'mmyyyy':
+				option.push(month);
+				option.push(years);
+			break;
+			case 'yyyy':
+				option.push(years);
+			break;
+		}
+		var options = new Array();
+		options.push(option);
+
+		// console.log(option);
+
+
+		var select;
+		$('#container_dselect').html('');
+
+		$.each(option, function(vals) {
+			// console.log(vals);
+			select = '</br><label class="edit" for="dselect'+vals+'">sdate</label><select class="field sdate'+vals+'" name="sdate'+vals+'" id="dselect'+vals+'"></select></br>';
+
+			$('#container_dselect').append(select);
+
+			$(target + '.sdate'+vals).append(new Option('Please Select...',''));	
+			$.each(option[vals], function(val, val) {
+			
+				if(val != ''){
+					// focus selected value
+					if(strstr(val, '{SELECTED}')){
+						val = val.replace('{SELECTED}','');
+						var defaultSelected = true;
+					}
+			    	$(target + '.sdate'+vals).append(new Option(val,val,defaultSelected));
+				}
+
+			});
+
+		});
+
+
+	}
+
+	// Applied to Select & Chain Select
+	// $(event) -> this
+	function constructOption(target, thatval, chainselect) { 
+		$(target +" option").remove();
+		var options = thatval.split("\n");
+		var index = target.split("_");
+		index = index[1].replace(' .field','');
+		var defaultSelected = false;
+		options = getUnique(options);
+
+		var i=0;
+		var count;
+		if(chainselect){
+			// append container
+    		var selections = '<div class="selections prop_'+index[0]+'"></div>';
+    		$('.element').append(selections);
+    	}
+
+		$(target).append(new Option('Please Select...',''));	
+		$.each(options, function(val, val) {
+			if(val != ''){
+				// focus selected value
+				if(strstr(val, '{SELECTED}')){
+					val = val.replace('{SELECTED}','');
+					var defaultSelected = true;
+				}
+				if(chainselect){
+					index = i++;
+		    		$(target).append(new Option(val,index,defaultSelected));
+		    		// clone options properties
+		    		var clone = '<label for="'+val+'">'+val+'</label><textarea name="option'+ index +'" class="property"></textarea>';
+		    		$('.selections').append(clone);
+				} else {
+					// construct <options>
+		    		$(target).append(new Option(val,val,defaultSelected));
+				}
+			}
+		});
+
+		// construct chain select array
+		$('.selections').live('change', function(){	
+    		window.chain_sel = new Array();
+			$('.property[name]', this).each(function(){
+				var chain_val = $(this).attr('value').split("\n");
+				if(chain_val != ''){
+					chain_sel.push(chain_val);
+				}
+			});
+		});	
+
+		// reconstruct <options> according to selection
+		$(target).live('change', function(){
+			$('.field_2 option').remove();
+			var val = $(this).val();	
+			$('.field_2').append(new Option('Please Select...',''));		
+			$.each(window.chain_sel[val], function(val, val) {
+			    $('.field_2').append(new Option(val,val));
+			});
+		});
+
+	}	
+/* ----------SCRIPT END-----------------------------------------------------------------------------*/
 </script>
 
 
@@ -215,49 +471,54 @@
 <fieldset id="formFields">
 	<legend>Fields</legend>
 	<div id="field1" class="fieldwrapper">
-		<div class="rows">
-			<label>Field Type</label>
-			<select id="select1" name="data[Campaign][rules][1][fieldtype]" class="sfield">
-				<option value="">Select Field Type</option>
 
-				<optgroup label="Input">
-					<option value="email">Email</option>
-					<option value="hidden">Hidden</option>
-					<option value="postcode">Postcode</option>
-					<option value="text">Text</option>
-					<option value="textarea">Textarea</option>
-				</optgroup>
+	<div class="rows">
+	<ul class="sfield">
+		<li>Input
+			<ul>
+			<li title="email" class="addfield">Email</li>
+			<li title="hidden" class="addfield">Hidden</li>
+			<li title="phone" class="addfield">Phone</li>
+			<li title="postcode" class="addfield">Postcode</li>
+			<li title="text" class="addfield">Text</li>
+			<li title="textarea" class="addfield">Textarea</li>
+		</ul>
+		</li>
+		<li>Checkbox
+			<ul>
+			<li title="gcheckbox" class="addfield">Group</li>
+			<li title="scheckbox" class="addfield">Single</li>
+		</ul>
+		</li>
+		<li>Radio
+			<ul>
+			<li title="gradio" class="addfield">Group</li>
+		</ul>
+		</li>
+		<li>Select
+			<ul>
+			<li title="chainselect" class="addfield">Chain-Select</li>
+			<li title="select" class="addfield">Select</li>
+			<li title="sdate" class="addfield">Select (Date)</li>
+		</ul>
+		</li>
+		<li>Button
+			<ul>
+			<li title="button" class="addfield">Button</li>
+			<li title="reset" class="addfield">Reset</li>
+			<li title="submit" class="addfield">Submit</li>
+		</ul>
+		</li>
+	</ul>
+	</div>
 
-				<optgroup label="Checkbox">
-					<option value="gcheckbox">Group</option>
-					<option value="scheckbox">Single</option>
-				</optgroup>
-
-				<optgroup label="Radio">
-					<option value="gradio">Group</option>
-					<option value="sradio">Single</option>
-				</optgroup>
-
-				<optgroup label="Option">
-					<option value="chain">Chain-Select</option>
-					<option value="select">Select</option>
-					<option value="sdate">Select (Date)</option>
-				</optgroup>
-
-				<optgroup label="Button">
-					<option value="button">Button</option>
-					<option value="reset">Reset</option>
-					<option value="submit">Submit</option>
-				</optgroup>
-			</select>
-
-		</div>			
-			<div class="clearboth"></div>
+	<div class="clearboth"></div>
 	</div>
 </fieldset>
 <fieldset id="formView">
 	<legend>View</legend>
-	<div class="sample"></div>
+	<div class="view"></div>
+	<input type="hidden" name="formViewVal" id="formViewVal" value="">
 </fieldset>
 
 <fieldset id="formProp">
@@ -265,10 +526,10 @@
 	<div class="element"></div>
 </fieldset>
 
-			<div class="clearboth"></div>
+<div class="clearboth"></div>
 
-
-<!-- <input type="button" value="Add a field" class="add" id="add" /> -->
+<!-- 
+<input type="button" value="Add a field" class="add" id="add"> -->
 
 
 </div>

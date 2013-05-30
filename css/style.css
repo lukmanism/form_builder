@@ -79,13 +79,6 @@ input[type=checkbox] {
 div.checkbox label {
 	display: inline;
 }
-input[type=radio] {
-	float:left;
-	width:auto;
-	margin: 6px 0;
-	padding: 0;
-	line-height: 26px;
-}
 .radio label {
 	margin: 0 0 6px 20px;
 	line-height: 26px;
@@ -153,26 +146,21 @@ input.remove:hover {
     opacity: 1;
 }
 .fieldwrapper {
-	border-bottom: dotted 1px #B3B5A8;
-	min-height: 100px;
-	height: auto!important;
-	position: relative;
 	padding: 10px;
 }
-.samplefield:hover,
-.fieldwrapper:hover,
+.viewField:hover,
 .fieldselected {
 	background-color: #FFFFCC;
 }
 h3.number {
-	position: absolute;
-	left: 10px;
-	font-weight: bold;
-	font-size: 34px;
 	color: #E8E9E4;
-	width: 36px;
-	text-align: right;
-	line-height: 64px;
+    font-size: 16px;
+    font-weight: bold;
+    left: 8px;
+    position: absolute;
+    text-align: right;
+    top: -6px;
+    width: 20px;
 }
 input[type="text"],
 input[type="password"] {
@@ -255,11 +243,11 @@ fieldset {
 fieldset#formView {	
 	width: 40%;
 }
-.sample {
+.view {
 }
-.sample label {
+.view label {
 	float: left;
-	width: 25%;
+	width: 40%;
 	text-align: right;
 	line-height: 28px;
 	margin-right: 8px;
@@ -270,6 +258,32 @@ fieldset#formView {
 	padding: 4px;
 	position: relative;
 }
-.samplefield {
+.viewField {
 	cursor: pointer;
+}
+
+#formFields ul {
+	margin: 0;
+	padding: 0;
+}
+
+#formFields ul li {
+	list-style: none;
+	margin: 4px 0 4px 10px;
+	padding: 0;
+	font-weight: bold;
+	width: 100%;
+}
+
+#formFields ul li ul li {
+	font-weight: normal;
+	cursor: pointer;
+	padding: 2px;
+}
+#formFields .addfield:hover {
+	background-color: #56584B;
+	color: #FFFFFF;
+}
+.hiddenfield {
+	opacity: 0.2;
 }
