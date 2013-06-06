@@ -1,9 +1,28 @@
-body {
+body{
+	font-family: helvetica, arial;
 	font-size: 1em;
 }
 .container {
-	font-size: 70%;
+	font-size: 90%;
 }
+.twocolumn {
+	float: left;
+	width: 40%;
+	padding: 5px;
+}
+#form_elements, #form_build { 
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	float: left;
+	margin-right: 10px;
+	background: #eee;
+	padding: 5px;
+}
+#form_elements li, #form_build li { 
+	margin: 5px;
+	padding: 5px;
+ }
 
 /** Forms **/
 form {
@@ -284,6 +303,15 @@ fieldset#formView {
 	background-color: #56584B;
 	color: #FFFFFF;
 }
-.hiddenfield {
+.hidden {
 	opacity: 0.2;
+}
+input[type="hidden"]{
+	background-color: black;
+    border: 1px solid;
+    display: block;
+    height: 55px;
+    opacity: 1;
+    visibility: visible;
+    width: 222px;
 }

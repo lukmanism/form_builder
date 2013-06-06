@@ -1,0 +1,81 @@
+{
+	'input' => 
+		'attribute', { 
+			'class' 	=> '',
+			'id'		=> '',
+			'value' 	=> '',
+			'name' 		=> '',
+			'type' 		=> {
+				'checkbox' 	=> {'single', 'group'},
+				'button' 	=> {'onclick'},
+				'hidden',
+				'radio' 	=> {'group'},
+				'reset',
+				'submit' 	=> {'onclick'},
+				'text'		=> {''},
+				'format' 	=> {
+								'email',
+								'phone' 	=> {
+									'region', {
+										'us', 'international'
+									}
+								},
+								'postcode' 	=> {
+									'region', {
+										'us', 'international'
+									}
+								},
+								'alphanumeric',
+								'alphabetic',
+								'numeric'
+								}
+			},
+			'size'		=> '',
+			'maxlength'	=> ''
+		},
+		'validation' => {
+			'required' 	=> '',
+			'disabled'	=> '',
+			'readonly'	=> ''
+		},
+	'textarea' =>
+		'attribute', {
+			'class' 	=> '',
+			'id'		=> '',
+			'value' 	=> '',
+			'name' 		=> '',
+			'cols'		=> '',
+			'rows'		=> ''
+		},
+		'validation' => {
+			'required' 	=> '',
+			'disabled'	=> '',
+			'readonly'	=> ''
+		},
+	'select' =>
+		'attribute', {
+			'class' 	=> '',
+			'id'		=> '',
+			'value' 	=> '',
+			'name' 		=> '',
+			'type'		=> '',
+			'format'	=> {
+							'chain_select' 	=> {'level'}, 
+							'single' 		=> {'menu', 'list'}, 
+							'date' 			=> {'mmyyyy', 'yyyy', 'season'}
+							}
+			'size'		=> ''
+		},
+		'validation' => {
+			'required' 	=> ''
+		},
+	'form' =>
+		'attribute', {
+			'class' 	=> '',
+			'id'		=> '',
+			'action' 	=> '',
+			'method' 	=> {'POST', 'AJAX'},
+			'conversion'=> ''
+		}
+}
+
