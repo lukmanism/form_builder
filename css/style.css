@@ -1,9 +1,28 @@
-body {
+body{
+	font-family: helvetica, arial;
 	font-size: 1em;
 }
 .container {
-	font-size: 70%;
+	font-size: 90%;
 }
+.twocolumn {
+	float: left;
+	width: 40%;
+	padding: 5px;
+}
+#form_elements, #form_build { 
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	float: left;
+	margin-right: 10px;
+	background: #eee;
+	padding: 5px;
+}
+#form_elements li, #form_build li { 
+	margin: 5px;
+	padding: 5px;
+ }
 
 /** Forms **/
 form {
@@ -162,6 +181,16 @@ h3.number {
     top: -6px;
     width: 20px;
 }
+.rows h3 {
+	cursor: pointer;
+}
+.rows h3:hover {
+	background-color: #FFFFD5;
+	color: #C0C0C0;
+}
+.rows h3:hover:after {
+	content: " click to edit";
+}
 input[type="text"],
 input[type="password"] {
 	width: 250px;
@@ -284,6 +313,15 @@ fieldset#formView {
 	background-color: #56584B;
 	color: #FFFFFF;
 }
-.hiddenfield {
+.hidden {
 	opacity: 0.2;
+}
+input[type="hidden"]{
+	background-color: black;
+    border: 1px solid;
+    display: block;
+    height: 55px;
+    opacity: 1;
+    visibility: visible;
+    width: 222px;
 }
